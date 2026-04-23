@@ -15,7 +15,8 @@ LABEL_ENCODER_PATH = os.path.join(BASE_DIR, "model", "label_encoder.pkl")
 try:
     clf           = joblib.load(CLASSIFIER_PATH)
     label_encoder = joblib.load(LABEL_ENCODER_PATH)
-    embedder      = SentenceTransformer("all-MiniLM-L6-v2")
+    embedder      = SentenceTransformer("all-MiniLM-L6-v2", cache_folder="./model_cache")
+
     print("✅ ML specialist model loaded")
 except Exception as e:
     print("⚠️ ML model not found:", e)
