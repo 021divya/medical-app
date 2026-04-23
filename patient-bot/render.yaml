@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: medico-patient-bot
+    runtime: python
+    rootDir: patient-bot
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api:app --host 0.0.0.0 --port 10000
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: TRANSFORMERS_OFFLINE
+        value: "1"
+      - key: HF_DATASETS_OFFLINE
+        value: "1"

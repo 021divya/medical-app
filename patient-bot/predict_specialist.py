@@ -12,15 +12,23 @@ LABEL_ENCODER_PATH = os.path.join(BASE_DIR, "model", "label_encoder.pkl")
 # ─────────────────────────────────────────────────────────────
 # Load models
 # ─────────────────────────────────────────────────────────────
-try:
-    clf           = joblib.load(CLASSIFIER_PATH)
-    label_encoder = joblib.load(LABEL_ENCODER_PATH)
-    embedder      = SentenceTransformer("all-MiniLM-L6-v2", cache_folder="./model_cache")
+# Lazy loading — loads only when first prediction is needed
+clf = None
+label_encoder = None
+embedder = None
 
-    print("✅ ML specialist model loaded")
-except Exception as e:
-    print("⚠️ ML model not found:", e)
-    clf = embedder = label_encoder = None
+def _load_models():
+    global clf, label_encoder, embedder
+    if embedder is not None:
+        return  # already loaded
+    try:
+        clf           = joblib.load(CLASSIFIER_PATH)
+        label_encoder = joblib.load(LABEL_ENCODER_PATH)
+        embedder      = SentenceTransformer("all-MiniLM-L6-v2", cache_folder="./model_cache")
+        print("✅ ML specialist model loaded")
+    except Exception as e:
+        print("⚠️ ML model not found:", e)
+        clf = embedder = label_encoder = None
 
 
 # ─────────────────────────────────────────────────────────────

@@ -12,6 +12,10 @@ from bot_flow          import handle_message, reset_session, get_all_sessions  #
 from recommend_doctors import recommend_doctors
 from geocode_utils     import geocode_location
 
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.info("🚀 Starting API server...")
 app = FastAPI(title="AI Medical Assistant Bot", version="4.1")
 
 app.add_middleware(
