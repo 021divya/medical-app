@@ -1,0 +1,5 @@
+contact = Column(String, nullable=True)
+gender = Column(String, nullable=True)
+dob = Column(String, nullable=True)
+blood_group = Column(String, nullable=True)
+marital_status = Column(String, nullable=True)

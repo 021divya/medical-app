@@ -1,0 +1,10 @@
+transformers
+torch
+pandas
+scikit-learn
+fastapi
+uvicorn
+geopy
+sentence-transformers
+joblib
+symspellpy
