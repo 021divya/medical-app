@@ -1,6 +1,6 @@
 import joblib
 import os
-from sentence_transformers import SentenceTransformer
+import re
 
 # ─────────────────────────────────────────────────────────────
 # Model paths
@@ -10,34 +10,34 @@ CLASSIFIER_PATH    = os.path.join(BASE_DIR, "model", "specialist_classifier.pkl"
 LABEL_ENCODER_PATH = os.path.join(BASE_DIR, "model", "label_encoder.pkl")
 
 # ─────────────────────────────────────────────────────────────
-# Load models
+# Lazy globals — loaded only on first prediction call
+# This is the KEY fix — models do NOT load at import time
+# so uvicorn can bind the port immediately on startup
 # ─────────────────────────────────────────────────────────────
-# Lazy loading — loads only when first prediction is needed
-clf = None
-label_encoder = None
-embedder = None
+_clf           = None
+_label_encoder = None
+_embedder      = None
 
 def _load_models():
-    global clf, label_encoder, embedder
-    if embedder is not None:
-        return  # already loaded
+    global _clf, _label_encoder, _embedder
+    if _embedder is not None:
+        return  # already loaded, skip
     try:
-        clf           = joblib.load(CLASSIFIER_PATH)
-        label_encoder = joblib.load(LABEL_ENCODER_PATH)
-        embedder      = SentenceTransformer("all-MiniLM-L6-v2", cache_folder="./model_cache")
+        from sentence_transformers import SentenceTransformer
+        _clf           = joblib.load(CLASSIFIER_PATH)
+        _label_encoder = joblib.load(LABEL_ENCODER_PATH)
+        _embedder      = SentenceTransformer("all-MiniLM-L6-v2")
         print("✅ ML specialist model loaded")
     except Exception as e:
-        print("⚠️ ML model not found:", e)
-        clf = embedder = label_encoder = None
+        print(f"⚠️ ML model not found: {e}")
+        _clf = _label_encoder = _embedder = None
 
 
 # ─────────────────────────────────────────────────────────────
 # RULE-BASED MAP  (highest priority — always checked first)
-# This is the GROUND TRUTH layer. ML is only used for cases
-# not covered here.
 # ─────────────────────────────────────────────────────────────
 RULE_MAP = [
-    # ENT  ← fixes "ear pain → cardiologist" bug
+    # ENT
     (["ear", "hearing", "ear pain", "ear ache", "earache",
       "ear discharge", "ear infection", "ringing in ear", "tinnitus",
       "throat", "sore throat", "throat pain", "tonsil", "tonsillitis",
@@ -58,7 +58,7 @@ RULE_MAP = [
       "sciatica", "arthritis", "gout", "spondylitis", "muscle pain",
       "muscle cramp", "tendon", "orthopedic"],                             "Orthopaedics"),
 
-    # Cardiology  ← only truly cardiac symptoms
+    # Cardiology
     (["chest pain", "heart", "palpitation", "cardiac", "heart attack",
       "irregular heartbeat", "blood pressure", "hypertension",
       "heart failure", "angina", "arrhythmia", "ecg", "cholesterol",
@@ -97,33 +97,24 @@ RULE_MAP = [
       "watery eye", "cataract", "glaucoma", "retina", "conjunctivitis",
       "squint", "spectacles", "eye infection"],                            "Ophthalmology"),
 
-
-    # General Medicine — true fallback only
+    # General Medicine
     (["stomach", "digestion", "nausea", "vomit", "vomiting", "diarrhea",
       "constipation", "abdomen", "gas", "acidity", "bloating",
       "stomach pain", "abdominal pain", "ibs", "crohn", "colitis",
       "liver", "hepatitis", "jaundice", "gallbladder", "ulcer",
-      "endoscopy", "gastric","fever", "flu", "weakness", "fatigue", "body ache", "infection",
-      "cough", "diabetes", "sugar", "thyroid", "asthma",
-      "wheeze", "lung", "breathless", "breathing difficulty",
+      "endoscopy", "gastric", "fever", "flu", "weakness", "fatigue",
+      "body ache", "infection", "cough", "diabetes", "sugar", "thyroid",
+      "asthma", "wheeze", "lung", "breathless", "breathing difficulty",
       "weight loss", "weight gain", "appetite loss", "general",
       "checkup", "routine"],                                               "General Medicine"),
 ]
 
 
 def _rule_based(text: str) -> str | None:
-    """
-    Returns specialist if ANY rule keyword matches, else None.
-    Longer/more specific phrases checked first to avoid partial clashes.
-    e.g. 'ear pain' should not match 'pain' in Orthopaedics.
-    """
     t = text.lower()
-    # Sort by longest keyword first so specific phrases win
     for keywords, spec in RULE_MAP:
         sorted_kw = sorted(keywords, key=len, reverse=True)
         for kw in sorted_kw:
-            # Whole-phrase boundary match
-            import re
             pattern = r"\b" + re.escape(kw) + r"\b"
             if re.search(pattern, t):
                 return spec
@@ -132,7 +123,6 @@ def _rule_based(text: str) -> str | None:
 
 # ─────────────────────────────────────────────────────────────
 # ML confidence threshold
-# Below this → distrust ML and use rule-based instead
 # ─────────────────────────────────────────────────────────────
 ML_CONFIDENCE_THRESHOLD = 0.55
 
@@ -141,14 +131,8 @@ def predict_specialist(symptoms_text: str) -> str:
     """
     3-layer prediction strategy:
 
-    Layer 1 — Rule-based (highest priority)
-              If ANY known symptom keyword matches → use it.
-              This prevents ML hallucinations for common symptoms.
-
-    Layer 2 — ML model with confidence gate
-              Only used when rules don't match.
-              If confidence < threshold → fall back to Layer 3.
-
+    Layer 1 — Rule-based (highest priority, no model needed)
+    Layer 2 — ML model with confidence gate (lazy loaded)
     Layer 3 — General Medicine (safe fallback)
     """
     text = symptoms_text.strip().lower()
@@ -159,21 +143,23 @@ def predict_specialist(symptoms_text: str) -> str:
         print(f"[predict] Rule-based → {rule_result}")
         return rule_result
 
-    # ── Layer 2: ML model with confidence gate ────────────────
-    if clf is not None and embedder is not None:
+    # ── Layer 2: ML model (loaded lazily here, not at startup) ─
+    _load_models()
+
+    if _clf is not None and _embedder is not None:
         try:
-            emb         = embedder.encode([text])
-            proba       = clf.predict_proba(emb)[0]
-            confidence  = proba.max()
-            pred_index  = proba.argmax()
-            specialist  = label_encoder.inverse_transform([pred_index])[0]
+            emb        = _embedder.encode([text])
+            proba      = _clf.predict_proba(emb)[0]
+            confidence = proba.max()
+            pred_index = proba.argmax()
+            specialist = _label_encoder.inverse_transform([pred_index])[0]
 
             print(f"[predict] ML → {specialist} (confidence: {confidence:.2f})")
 
             if confidence >= ML_CONFIDENCE_THRESHOLD:
                 return specialist
             else:
-                print(f"[predict] ML confidence too low ({confidence:.2f}) → General Medicine")
+                print(f"[predict] Low confidence ({confidence:.2f}) → General Medicine")
         except Exception as e:
             print(f"[predict] ML error: {e}")
 
