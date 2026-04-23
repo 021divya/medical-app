@@ -49,7 +49,7 @@ app.include_router(records.router,             prefix="/api/v1/records",       t
 app.include_router(doctor.router,              prefix="/api/v1/doctor",        tags=["Doctor Dashboard"])
 app.include_router(access_routes.router,       prefix="/api/v1/access",        tags=["Access Requests"])
 app.include_router(admin_routes.router,        prefix="/api/v1/admin",         tags=["Admin"])
-app.include_router(health_router,              prefix="/api")
+app.include_router(health_router,              prefix="/api/v1")
 app.include_router(profile_routes.router,      prefix="/api/v1/profile",       tags=["Profile"])
 app.include_router(appointment_routes.router,  prefix="/api/v1/appointments",  tags=["Appointments"])
 app.include_router(prescription_routes.router, prefix="/api/v1/prescriptions", tags=["Prescriptions"])
