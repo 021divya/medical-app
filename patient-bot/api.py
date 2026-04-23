@@ -120,3 +120,7 @@ def recommend(data: RecommendRequest):
         "message": f"Here are doctors near {data.location_text} for {data.specialist}:",
         "doctors": doctors,
     }
+    
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("api:app", host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
