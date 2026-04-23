@@ -1,10 +1,11 @@
-transformers
-torch
+fastapi
+uvicorn[standard]
 pandas
 scikit-learn
-fastapi
-uvicorn
-geopy
 sentence-transformers
 joblib
 symspellpy
+geopy
+torch
+transformers
+python-dotenv
