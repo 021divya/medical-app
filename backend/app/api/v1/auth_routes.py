@@ -69,7 +69,6 @@ def forgot_password(email: str = Form(...), db: Session = Depends(database.get_d
 
     db.commit()
 
-    # for now we return OTP (later we will send email)
     return {
     "message": "OTP sent to your email"
 }
@@ -115,6 +114,6 @@ def read_users_me(current_user: User = Depends(get_current_user)):
         "email": current_user.email,
         "role": current_user.role,
         "full_name": current_user.full_name,
-        "is_verified": current_user.is_verified,  # ✅ NAYA
+        "is_verified": current_user.is_verified,
     }
 
