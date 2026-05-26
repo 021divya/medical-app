@@ -20,7 +20,7 @@ class UploadPrescriptionScreen extends StatefulWidget {
 }
 
 class _UploadPrescriptionScreenState extends State<UploadPrescriptionScreen> {
-  // ✅ FIXED: Use ApiService.mainBaseUrl — gives 10.0.2.2 on Android emulator
+
   String get _baseUrl => ApiService.mainBaseUrl;
 
   final _titleController = TextEditingController();
@@ -70,7 +70,7 @@ class _UploadPrescriptionScreenState extends State<UploadPrescriptionScreen> {
 
   void _clearFile() => setState(() => _pickedFile = null);
 
-  // ✅ FIXED: Builds correct URL using _baseUrl getter + LaunchMode.externalApplication
+
   Future<void> _openFile(String fileUrl) async {
     final fullUrl =
         fileUrl.startsWith('http') ? fileUrl : '$_baseUrl/$fileUrl';
@@ -388,7 +388,7 @@ class _UploadPrescriptionScreenState extends State<UploadPrescriptionScreen> {
                   ],
                 ),
               ),
-              // ✅ FIXED: Uses _openFile() with correct URL
+              
               if (hasFile)
                 IconButton(
                   icon: const Icon(Icons.open_in_new,
