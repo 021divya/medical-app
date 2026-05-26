@@ -39,13 +39,12 @@ async def websocket_endpoint(websocket: WebSocket, user_id: int, db: Session = D
             # For simplicity, we assume a session exists or create a dummy one
             
             # 2. Logic: "The Switch"
-            # Here is where you will add AI later.
             # IF AI_MODE:
             #    response = call_ai_model(data)
             # ELSE:
             #    notify_doctor(data)
             
-            # For now, echo the message back to prove it works
+            # Eecho the message back to prove it works
             await manager.send_personal_message(f"You wrote: {data}", user_id)
             
     except WebSocketDisconnect:
