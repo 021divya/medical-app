@@ -1,8 +1,6 @@
 # ==============================
 # response_formatter.py
-# Converts parameters + abnormal dict
-# into a structured JSON-friendly list
-# for Flutter to render with colors
+# Converts parameters + abnormal dict into a structured JSON-friendly list for Flutter to render with colors
 # ==============================
 
 from abnormal_detector import NORMAL_RANGES
