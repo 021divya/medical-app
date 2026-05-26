@@ -6,7 +6,6 @@ class DoctorVerificationPendingScreen extends StatelessWidget {
   const DoctorVerificationPendingScreen({super.key});
 
   Future<void> _approveDoctor(BuildContext context) async {
-    // ✅ Backend mein verified mark karo
     await ApiService.verifyDoctor();
 
     final prefs = await SharedPreferences.getInstance();
