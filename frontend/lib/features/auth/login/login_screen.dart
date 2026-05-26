@@ -83,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       
-                      // 1. Loading dikhayein
+                      // 1. Loading 
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text("Logging in...")),
@@ -97,17 +97,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       );
 
                       if (loginSuccess) {
-                        // 3. ✅ Token mil gaya, ab Naam (Profile) mangwao
+                       
                         bool profileSuccess = await ApiService.fetchUserProfile();
                         
                         if (!mounted) return;
                         ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
                         if (profileSuccess) {
-                           // Sab sahi hai -> Home par jao
+                          
                            Navigator.pushReplacementNamed(context, '/home');
                         } else {
-                           // Login hua par profile nahi aayi (Rare case)
+                         
                            Navigator.pushReplacementNamed(context, '/home');
                         }
                          
