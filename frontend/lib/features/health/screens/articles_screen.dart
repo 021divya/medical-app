@@ -90,7 +90,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
             );
           }
 
-          // ✅ FIXED: category is 'health' in the backend, not 'article'
+
           final articles = (snapshot.data ?? [])
               .where((item) => item['category'] == 'health')
               .toList();
