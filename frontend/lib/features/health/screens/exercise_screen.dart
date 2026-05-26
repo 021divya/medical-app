@@ -18,7 +18,6 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
     futureData = HealthService.fetchHealthContent();
   }
 
-  // ✅ Works for BOTH youtube.com & youtu.be links
   String getVideoId(String url) {
     try {
       if (url.contains("v=")) {
