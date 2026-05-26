@@ -24,8 +24,7 @@ class _DoctorPatientRecordsScreenState
   bool _isLoading = true;
   List<Map<String, dynamic>> _records = [];
 
-  // ✅ FIXED: Use ApiService.mainBaseUrl instead of hardcoded 127.0.0.1
-  // This returns http://10.0.2.2:8000 on Android emulator automatically
+
   String get _baseUrl => ApiService.mainBaseUrl;
 
   @override
@@ -44,7 +43,7 @@ class _DoctorPatientRecordsScreenState
     });
   }
 
-  // ✅ FIXED: Build full URL with correct host + LaunchMode.externalApplication
+
   Future<void> _openFile(String fileUrl) async {
     final url = '$_baseUrl/$fileUrl';
     final uri = Uri.parse(url);
@@ -231,7 +230,7 @@ class _DoctorPatientRecordsScreenState
                 offset: const Offset(0, 4))
           ]),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // ✅ FIXED: Image preview uses correct host URL
+  ]
         if (isImage && fileUrl.isNotEmpty)
           ClipRRect(
             borderRadius:
@@ -273,7 +272,7 @@ class _DoctorPatientRecordsScreenState
                       style: const TextStyle(
                           color: Colors.grey, fontSize: 12)),
                 ])),
-            // ✅ FIXED: Uses _openFile() with correct URL
+
             IconButton(
                 icon: const Icon(Icons.open_in_new,
                     color: Color(0xFF9C89E8)),
