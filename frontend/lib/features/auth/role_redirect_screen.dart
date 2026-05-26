@@ -34,21 +34,18 @@ class _RoleRedirectScreenState extends State<RoleRedirectScreen> {
     // ── DOCTOR ───────────────────────────────
     if (role == 'doctor') {
       final status = prefs.getString('doctor_status_$email');
-
-      // Pehle se approved hai (purana doctor)
+      
       if (status == 'approved') {
         Navigator.pushReplacementNamed(context, '/doctor-dashboard');
         return;
       }
 
-      // Form submit ho chuka hai, approval pending hai
       if (status == 'pending') {
         Navigator.pushReplacementNamed(
             context, '/doctor-verification-pending');
         return;
       }
 
-      // Bilkul naya doctor — verification form dikhao
       Navigator.pushReplacementNamed(context, '/doctor-verification');
       return;
     }
