@@ -45,11 +45,11 @@ def update_profile(
 
     for key, value in data.dict(exclude_unset=True).items():
         
-        # 🔥 HANDLE NAME MISMATCH
+        # HANDLE NAME MISMATCH
         if key == "name":
             user.full_name = value
 
-        # 🔥 SAFE UPDATE ONLY IF FIELD EXISTS
+        # SAFE UPDATE ONLY IF FIELD EXISTS
         elif hasattr(user, key):
             setattr(user, key, value)
 
