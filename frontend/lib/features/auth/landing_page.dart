@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-// ✅ Landing page ab sirf /auth pe redirect karti hai
-// Landing aur Role selection screens bypass ho gayi hain
+
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});
 
