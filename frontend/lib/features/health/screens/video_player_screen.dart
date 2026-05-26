@@ -34,7 +34,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         flags: const YoutubePlayerFlags(
           autoPlay: true,
           mute: false,
-          // ✅ FIXED: disableDragSeek avoids crashes on emulator
+          // disableDragSeek avoids crashes on emulator
           disableDragSeek: true,
           useHybridComposition: true,
         ),
@@ -50,7 +50,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     super.dispose();
   }
 
-  // ✅ FIXED: Fallback — open in YouTube app / browser if WebView fails
+  // Fallback — open in YouTube app / browser if WebView fails
   Future<void> _openInBrowser() async {
     final uri = Uri.parse(widget.videoUrl);
     if (await canLaunchUrl(uri)) {
@@ -67,7 +67,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         actions: [
-          // ✅ Always show "open in YouTube" button as safety net
+          //  Always show "open in YouTube" button as safety net
           IconButton(
             icon: const Icon(Icons.open_in_new),
             tooltip: "Open in YouTube",
@@ -80,7 +80,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   }
 
   Widget _buildBody() {
-    // ✅ FIXED: Show fallback UI if player couldn't init or videoId is empty
+    // Show fallback UI if player couldn't init or videoId is empty
     if (_playerError || _videoId.isEmpty || _controller == null) {
       return _fallbackUI();
     }
