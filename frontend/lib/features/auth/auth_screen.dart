@@ -17,7 +17,7 @@ class _AuthScreenState extends State<AuthScreen>
   String? _errorMessage;
   String _selectedRole = 'patient';
 
-  // ✅ Admin credentials hardcoded
+ 
   static const String _adminEmail    = 'admin12@gmail.com';
   static const String _adminPassword = 'admin123';
 
@@ -211,10 +211,10 @@ class _AuthScreenState extends State<AuthScreen>
             ),
             child: SafeArea(
               child: Center(
-                // ✅ Poori screen center — mobile + web dono pe
+
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(
-                    maxWidth: 480, // ✅ Max width — web pe square jaisa
+                    maxWidth: 480, 
                   ),
                   child: Column(
                     children: [
