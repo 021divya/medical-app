@@ -9,8 +9,7 @@ class HealthService {
     return "127.0.0.1";
   }
 
-  // ✅ FIXED: matches app.include_router(health_router, prefix="/api")
-  // Full URL becomes: http://10.0.2.2:8000/api/health-content
+
   static String get _baseUrl => "http://$_host:8000/api";
 
   static Future<List<dynamic>> fetchHealthContent() async {
