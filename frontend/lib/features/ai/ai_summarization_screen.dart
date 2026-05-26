@@ -11,9 +11,8 @@ class AISummarizationScreen extends StatefulWidget {
 }
 
 class _AISummarizationScreenState extends State<AISummarizationScreen> {
-  // ✅ FIX: use ApiService getters so emulator always gets correct host
-  String get botBaseUrl  => ApiService.doctorBotUrl;   // port 8001
-  String get mainBaseUrl => ApiService.mainBaseUrl;    // port 8000  ← NEW getter (see api_service.dart)
+  String get botBaseUrl  => ApiService.doctorBotUrl;   
+  String get mainBaseUrl => ApiService.mainBaseUrl;    
 
   bool _loadingPatients = true;
   List<Map<String, dynamic>> _approvedPatients = [];
@@ -93,9 +92,7 @@ class _AISummarizationScreenState extends State<AISummarizationScreen> {
       for (final record in _selectedRecords) {
         final fileUrl = record['file_url'] ?? record['file_path'] ?? '';
         final label = record['title'] ?? record['filename'] ?? 'Report';
-
-        // ✅ FIX: was hardcoded 'http://127.0.0.1:8000/$fileUrl'
-        //         now uses ApiService.mainBaseUrl so emulator uses 10.0.2.2
+        
         final fileResponse = await http.get(
           Uri.parse('$mainBaseUrl/$fileUrl'),
         );
@@ -142,7 +139,7 @@ class _AISummarizationScreenState extends State<AISummarizationScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        // ✅ FIX: corrected port number in error message (was 8001, doctor bot is 8001 ✓)
+
         _errorMsg = "Error: Make sure Doctor Bot is running on port 8001!";
         _isAnalyzing = false;
       });
