@@ -19,7 +19,7 @@ class PatientHealthTimelineScreen extends StatefulWidget {
 
 class _PatientHealthTimelineScreenState
     extends State<PatientHealthTimelineScreen> {
-  // ✅ FIXED: Use ApiService.mainBaseUrl (10.0.2.2:8000 on Android emulator)
+
   String get _baseUrl => ApiService.mainBaseUrl;
 
   bool _isLoading = true;
@@ -52,7 +52,6 @@ class _PatientHealthTimelineScreenState
     });
   }
 
-  // ✅ FIXED: Uses _baseUrl getter + LaunchMode.externalApplication
   Future<void> _openFile(String fileUrl) async {
     final uri = Uri.parse('$_baseUrl/$fileUrl');
     if (await canLaunchUrl(uri)) {
@@ -463,7 +462,7 @@ class _PatientHealthTimelineScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ✅ FIXED: Image preview uses correct host URL
+
           if (isImage && fileUrl.isNotEmpty)
             ClipRRect(
               borderRadius: const BorderRadius.vertical(
@@ -517,7 +516,7 @@ class _PatientHealthTimelineScreenState
                     ],
                   ),
                 ),
-                // ✅ FIXED: Uses _openFile() with correct URL
+
                 IconButton(
                   icon: const Icon(Icons.open_in_new,
                       color: Color(0xFF9C89E8), size: 20),
