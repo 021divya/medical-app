@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-load_dotenv()  # ← MUST be first, before any os.getenv() calls
+load_dotenv()  #MUST be first, before any os.getenv() calls
 import os
 
 
