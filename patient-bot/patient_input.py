@@ -1,6 +1,4 @@
-# =========================
-# STEP 3A: Patient Input
-# =========================
+
 
 def get_patient_input():
     """
@@ -12,17 +10,15 @@ def get_patient_input():
         "area": "dwarka",
         "latitude": 28.5921,
         "longitude": 77.0460,
-        "max_distance_km": 5,     # will use in STEP 3C
-        "max_fees": 2000,         # will use in STEP 3D
-        "min_rating": 4.0         # will use in STEP 3D
+        "max_distance_km": 5,    
+        "max_fees": 2000,         
+        "min_rating": 4.0         
     }
 
     return patient
 
 
-# =========================
-# TEST
-# =========================
+# Test
 if __name__ == "__main__":
     patient = get_patient_input()
     print("👤 Patient Input:")
