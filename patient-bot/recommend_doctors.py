@@ -2,9 +2,7 @@ import pandas as pd
 from predict_specialist import predict_specialist
 from distance_utils import get_distance_km
 
-# =========================
 # Load cleaned dataset
-# =========================
 doctor_df = pd.read_csv("data/clean_doctor_dataset.csv")
 
 doctor_df.columns = (
@@ -17,9 +15,7 @@ doctor_df.columns = (
 doctor_df["area"]      = doctor_df["area"].astype(str).str.lower().str.strip()
 doctor_df["speciality"] = doctor_df["speciality"].astype(str).str.lower().str.strip()
 
-# =========================
-# ✅ Speciality mapping — only dataset values
-# =========================
+# Speciality mapping — only dataset values
 SPECIALITY_MAP = {
     "general medicine": ["general medicine"],
     "neurology":        ["neurology"],
@@ -43,9 +39,7 @@ def recommend_doctors(
     max_fees=2000,
     min_rating=4.0
 ):
-    # ------------------------------------
     # Determine specialist
-    # ------------------------------------
     if specialist is None:
         specialist = predict_specialist(symptoms_text)
 
@@ -54,9 +48,7 @@ def recommend_doctors(
 
     specialist = str(specialist).lower().strip()
 
-    # ------------------------------------
     # Match to dataset speciality
-    # ------------------------------------
     allowed_specialities = SPECIALITY_MAP.get(specialist, [specialist])
 
     df_specialist = doctor_df[
@@ -72,9 +64,7 @@ def recommend_doctors(
     if df_specialist.empty:
         return pd.DataFrame()
 
-    # ------------------------------------
     # Locality filtering
-    # ------------------------------------
     if location_text is None:
         df_base = df_specialist
         locality_used = False
@@ -91,9 +81,7 @@ def recommend_doctors(
             df_base = df_specialist
             locality_used = False
 
-    # ------------------------------------
     # Distance calculation
-    # ------------------------------------
     if patient_lat is not None and patient_lng is not None:
         df_base["distance_km"] = df_base.apply(
             lambda row: get_distance_km(
@@ -105,9 +93,7 @@ def recommend_doctors(
     else:
         df_base["distance_km"] = 999
 
-    # ------------------------------------
     # Filter + sort
-    # ------------------------------------
     DISTANCE_LEVELS = [3, 5, 10, 20]
 
     for radius in DISTANCE_LEVELS:
