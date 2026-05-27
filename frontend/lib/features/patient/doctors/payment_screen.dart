@@ -38,7 +38,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
   static const Color dark = Color(0xFF5E4DB2);
   static const Color light = Color(0xFFEDE7F6);
 
-  // Test key — must match RAZORPAY_KEY_ID in your .env
   static const String _razorpayKey = 'rzp_test_SanR5bmdBRKLmI';
 
   late Razorpay _razorpay;
@@ -96,7 +95,7 @@ bool isTestMode = true;
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
   debugPrint('✅ Payment success: ${response.paymentId}');
 
-  // 🧪 DUMMY MODE → skip backend verification
+
   if (isTestMode) {
     if (!mounted) return;
 
@@ -118,10 +117,10 @@ bool isTestMode = true;
         ),
       ),
     );
-    return; // 🚨 VERY IMPORTANT
+    return; 
   }
 
-  // 🔽 REAL PAYMENT FLOW (only when isTestMode = false)
+
   setState(() => _isProcessing = true);
 
   try {
@@ -242,7 +241,7 @@ Future<void> _processPayment() async {
       'MED${DateTime.now().millisecondsSinceEpoch % 1000000}';
 
   try {
-    // 🧪 DUMMY PAYMENT MODE (NO BACKEND, NO RAZORPAY)
+   
     debugPrint('Running in DUMMY payment mode...');
 
     await Future.delayed(const Duration(seconds: 2));
@@ -252,7 +251,7 @@ Future<void> _processPayment() async {
         "pay_dummy_123",     // paymentId
         "order_dummy_123",   // orderId
         "signature_dummy",   // signature
-        null,                // ✅ REQUIRED 4th parameter
+        null,                
       ),
     );
 
@@ -330,7 +329,7 @@ Future<void> _processPayment() async {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Test-mode banner (remove in production) ────────────
+          // ── Test-mode banner ────────────
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
