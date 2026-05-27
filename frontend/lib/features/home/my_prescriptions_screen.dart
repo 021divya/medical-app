@@ -13,7 +13,7 @@ class MyPrescriptionsScreen extends StatefulWidget {
 }
 
 class _MyPrescriptionsScreenState extends State<MyPrescriptionsScreen> {
-  // ✅ FIXED: Platform-aware base URL — mirrors ApiService._getHost()
+  
   static String get _baseUrl {
     if (Platform.isAndroid) return "http://10.0.2.2:8000";
     return "http://127.0.0.1:8000";
@@ -75,10 +75,10 @@ class _MyPrescriptionsScreenState extends State<MyPrescriptionsScreen> {
   }
 
   Future<void> _openFile(String fileUrl) async {
-    // ✅ FIXED: Replace any 127.0.0.1 in server-returned URLs with the correct host
+    
     String resolvedUrl;
     if (fileUrl.startsWith('http')) {
-      // Server may return http://127.0.0.1:8000/... — fix it for emulator
+     
       resolvedUrl = fileUrl.replaceFirst(
         RegExp(r'http://127\.0\.0\.1'),
         Platform.isAndroid ? 'http://10.0.2.2' : 'http://127.0.0.1',
