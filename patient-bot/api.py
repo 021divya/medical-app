@@ -1,9 +1,3 @@
-
-# ============================================================
-#  api.py  —  AI Patient Bot  (FastAPI Server)
-#  Run:  uvicorn api:app --host 0.0.0.0 --port 8002 --reload
-# ============================================================
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
