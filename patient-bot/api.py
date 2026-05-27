@@ -9,7 +9,7 @@ import os
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-logger.info("🚀 Starting API server...")
+logger.info(" Starting API server...")
 app = FastAPI(title="AI Medical Assistant Bot", version="4.1")
 
 app.add_middleware(
