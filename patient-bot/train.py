@@ -9,18 +9,18 @@ from transformers import (
 )
 import torch
 
-# 1️⃣ Load dataset
+# 1. Load dataset
 df = pd.read_csv("data/final_symptom_speciality_dataset.csv")
 
-# 2️⃣ Encode labels
+#  Encode labels
 label_map = {label: idx for idx, label in enumerate(df["Speciality"].unique())}
 df["label"] = df["Speciality"].map(label_map)
 
-# Save label map (IMPORTANT for inference)
+# 2. Save label map
 with open("model/label_map.json", "w") as f:
     json.dump(label_map, f)
 
-# 3️⃣ Train-test split
+# 3. Train-test split
 train_texts, val_texts, train_labels, val_labels = train_test_split(
     df["text"].tolist(),
     df["label"].tolist(),
@@ -29,7 +29,7 @@ train_texts, val_texts, train_labels, val_labels = train_test_split(
     stratify=df["label"]
 )
 
-# 4️⃣ Tokenizer
+# 4. Tokenizer
 tokenizer = DistilBertTokenizerFast.from_pretrained(
     "distilbert-base-uncased"
 )
@@ -37,7 +37,7 @@ tokenizer = DistilBertTokenizerFast.from_pretrained(
 train_enc = tokenizer(train_texts, truncation=True, padding=True)
 val_enc = tokenizer(val_texts, truncation=True, padding=True)
 
-# 5️⃣ Dataset class
+# 5. Dataset class
 class SymptomDataset(torch.utils.data.Dataset):
     def __init__(self, encodings, labels):
         self.encodings = encodings
@@ -54,13 +54,13 @@ class SymptomDataset(torch.utils.data.Dataset):
 train_dataset = SymptomDataset(train_enc, train_labels)
 val_dataset = SymptomDataset(val_enc, val_labels)
 
-# 6️⃣ Model
+#6. Model
 model = DistilBertForSequenceClassification.from_pretrained(
     "distilbert-base-uncased",
     num_labels=len(label_map)
 )
 
-# 7️⃣ Training arguments
+# 7. Training arguments
 training_args = TrainingArguments(
     output_dir="model",
     eval_strategy="epoch",
@@ -72,7 +72,7 @@ training_args = TrainingArguments(
     report_to="none"
 )
 
-# 8️⃣ Trainer
+# 8. Trainer
 trainer = Trainer(
     model=model,
     args=training_args,
@@ -81,11 +81,11 @@ trainer = Trainer(
     tokenizer=tokenizer
 )
 
-# 9️⃣ Train
+# 9. Train
 trainer.train()
 
-# 🔟 Save model
+# 10. Save model
 model.save_pretrained("model")
 tokenizer.save_pretrained("model")
 
-print("✅ Model training completed and saved.")
+print("Model training completed and saved.")
