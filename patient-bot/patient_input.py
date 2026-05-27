@@ -1,5 +1,3 @@
-
-
 def get_patient_input():
     """
     Temporary hard-coded patient input.
