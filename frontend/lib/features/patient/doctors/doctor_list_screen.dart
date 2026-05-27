@@ -151,7 +151,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      // ✅ FIX 1: allows Scaffold to resize when keyboard opens
+      // allows Scaffold to resize when keyboard opens
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text('Find Doctors',
@@ -165,7 +165,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
         ),
       ),
       drawer: AppDrawer(userName: userName, currentRoute: '/doctors'),
-      // ✅ FIX 2: Wrap entire body in CustomScrollView so search bar,
+      // Wrap entire body in CustomScrollView so search bar,
       //    chips, filters, and doctor list all scroll together on any
       //    screen size — no more overflow when the keyboard pops up.
       body: CustomScrollView(
@@ -253,7 +253,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      // ✅ FIX 3: No fixed height — lets content size itself naturally
+      // No fixed height — lets content size itself naturally
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -506,7 +506,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
   }
 
   // ── DOCTOR LIST as Sliver ─────────────────────────────────────────────────
-  // ✅ FIX 4: Changed from Expanded+ListView to SliverList so it works
+  // Changed from Expanded+ListView to SliverList so it works
   //    inside CustomScrollView without needing a fixed height parent.
   Widget _doctorListSliver() {
     return SliverPadding(
