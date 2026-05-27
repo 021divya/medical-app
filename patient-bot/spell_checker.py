@@ -1,19 +1,9 @@
-# =============================================================
-#  spell_checker.py  —  SymSpell integration for AI Patient Bot
-#  Handles:
-#    1. Spell correction using SymSpell
-#    2. Invalid / gibberish symptom detection (char-level)
-#    3. Symptom keyword validation (semantic-level)  ← KEY FIX
-#    4. Symptom vocabulary built from bot's own SYMPTOM_MAP
-# =============================================================
-
 import re
 import logging
 from pathlib import Path
 
 log = logging.getLogger("spell_checker")
 
-# ── Try to import SymSpell ────────────────────────────────────────────────
 try:
     from symspellpy import SymSpell, Verbosity
     SYMSPELL_AVAILABLE = True
@@ -21,14 +11,11 @@ except ImportError:
     SYMSPELL_AVAILABLE = False
     log.warning("symspellpy not installed. Run: pip install symspellpy")
 
-
-# ═════════════════════════════════════════════════════════════════════════
 #  SYMPTOM VOCABULARY
 #  Must mirror SYMPTOM_MAP in bot_flow.py.
 #  Split into two groups:
 #    SYMPTOM_KEYWORDS      → used to build SymSpell dictionary
 #    VALID_SYMPTOM_TOKENS  → used for post-correction validation
-# ═════════════════════════════════════════════════════════════════════════
 
 SYMPTOM_KEYWORDS: list[str] = [
     # Dermatology
@@ -132,10 +119,8 @@ def _contains_valid_symptom(text: str) -> bool:
     return False
 
 
-# ─────────────────────────────────────────────────────────────────────────
 #  GIBBERISH DETECTION  (character-level, runs BEFORE spell correction)
 #  Catches: "agsb", "zxcvbn", "aaaaaaa", "12345", "!@#$"
-# ─────────────────────────────────────────────────────────────────────────
 
 _MIN_VOWEL_RATIO  = 0.15
 _MAX_REPEAT_RATIO = 0.60
@@ -179,9 +164,7 @@ def _is_gibberish(text: str) -> bool:
     return False
 
 
-# ═════════════════════════════════════════════════════════════════════════
 #  SYMSPELL ENGINE
-# ═════════════════════════════════════════════════════════════════════════
 
 class SymSpellChecker:
     def __init__(self):
@@ -234,9 +217,7 @@ class SymSpellChecker:
 _checker = SymSpellChecker()
 
 
-# ═════════════════════════════════════════════════════════════════════════
 #  INVALID MESSAGES  (rotated so bot doesn't repeat itself)
-# ═════════════════════════════════════════════════════════════════════════
 
 _INVALID_MESSAGES = [
     (
@@ -266,9 +247,7 @@ def get_invalid_message() -> str:
     return msg
 
 
-# ═════════════════════════════════════════════════════════════════════════
 #  PUBLIC API  —  called by bot_flow.py
-# ═════════════════════════════════════════════════════════════════════════
 
 def process_symptom_input(raw_text: str) -> dict:
     """
