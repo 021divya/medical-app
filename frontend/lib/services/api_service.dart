@@ -16,7 +16,7 @@ class ApiService {
     }
   }
 
-  // ✅ Root URL for the main backend (used for file fetching)
+  // Root URL for the main backend (used for file fetching)
   static String get mainBaseUrl {
     return "http://${_getHost()}:8000";
   }
