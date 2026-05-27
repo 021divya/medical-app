@@ -19,9 +19,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ─────────────────────────────────────────────────────────────
 # Request Models
-# ─────────────────────────────────────────────────────────────
 
 class SymptomRequest(BaseModel):
     symptoms: str
@@ -38,9 +36,7 @@ class RecommendRequest(BaseModel):
 class ResetRequest(BaseModel):
     user_id: str = "guest"
 
-# ─────────────────────────────────────────────────────────────
 # Routes
-# ─────────────────────────────────────────────────────────────
 
 @app.get("/health")
 def health_check():
