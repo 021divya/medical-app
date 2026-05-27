@@ -7,9 +7,9 @@ class Doctor {
   final int fees;
   final double rating;
   final String availability;
-  final String phone;       // ✅ renamed from contact, handles both keys
+  final String phone;       
   final String address;
-  final int experience;     // ✅ new field
+  final int experience;     
 
   Doctor({
     required this.name,
@@ -35,10 +35,10 @@ class Doctor {
       fees:         (json['fees']        ?? json['Fees (₹)']             ?? 0).toInt(),
       rating:       (json['rating']      ?? json['Rating']               ?? 0).toDouble(),
       availability: json['availability'] ?? json['Availability']         ?? 'Not Available',
-      // ✅ handle both phone/contact keys safely
+     
       phone:        json['phone']        ?? json['contact'] ?? json['Contact Number'] ?? 'N/A',
       address:      json['address']      ?? json['Address']              ?? 'No Address Provided',
-      // ✅ safe int parse for experience
+      
       experience: json['experience'] is int
           ? json['experience'] as int
           : int.tryParse(json['experience']?.toString() ?? '0') ?? 0,
