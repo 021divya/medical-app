@@ -1,7 +1,6 @@
 import requests
 import urllib3
 
-# disable SSL warnings
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def geocode_location(location_text: str):
@@ -26,7 +25,7 @@ def geocode_location(location_text: str):
             url,
             params=params,
             headers=headers,
-            verify=False   # IMPORTANT: disables SSL verification
+            verify=False 
         )
 
         data = response.json()
