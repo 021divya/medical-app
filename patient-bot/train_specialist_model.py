@@ -5,12 +5,12 @@ Trains a LogisticRegression classifier on top of sentence-transformer
 embeddings to predict medical specialist from symptom text.
 
 Fixes:
-  ✅ Removed deprecated multi_class="auto" (dropped in sklearn 1.5+)
-  ✅ Heavily expanded augmented data for ALL specialists
-  ✅ 5x oversampling of augmented data
-  ✅ class_weight="balanced" handles CSV imbalance
-  ✅ Confidence threshold — low-confidence predictions → General Medicine
-  ✅ Saves model only if accuracy ≥ 75%
+   Removed deprecated multi_class="auto" (dropped in sklearn 1.5+)
+   Heavily expanded augmented data for ALL specialists
+   5x oversampling of augmented data
+   class_weight="balanced" handles CSV imbalance
+   Confidence threshold — low-confidence predictions → General Medicine
+   Saves model only if accuracy ≥ 75%
 """
 
 import os
@@ -26,11 +26,6 @@ from sentence_transformers import SentenceTransformer
 os.makedirs("model", exist_ok=True)
 
 
-# ═════════════════════════════════════════════════════════════
-#  AUGMENTED TRAINING DATA
-#  Every specialist has 40+ examples so the model treats them equally.
-#  Multiplied 5x below so this anchors the model hard.
-# ═════════════════════════════════════════════════════════════
 
 AUGMENTED_DATA = [
 
@@ -531,9 +526,7 @@ AUGMENTED_DATA = [
 ]
 
 
-# ═════════════════════════════════════════════════════════════
 #  LOAD CSV DATASET
-# ═════════════════════════════════════════════════════════════
 
 print("Loading CSV dataset...")
 try:
@@ -558,10 +551,8 @@ except Exception as e:
     df_csv = pd.DataFrame(columns=["text", "Speciality"])
 
 
-# ═════════════════════════════════════════════════════════════
 #  MERGE CSV + AUGMENTED DATA
 #  Augmented data repeated 5x so it strongly anchors the model
-# ═════════════════════════════════════════════════════════════
 
 df_augmented        = pd.DataFrame(AUGMENTED_DATA, columns=["text", "Speciality"])
 OVERSAMPLE_FACTOR   = 5
@@ -574,9 +565,7 @@ print(f"\nFinal merged dataset: {df_final.shape}")
 print(df_final["Speciality"].value_counts())
 
 
-# ═════════════════════════════════════════════════════════════
 #  ENCODE LABELS + EMBEDDINGS
-# ═════════════════════════════════════════════════════════════
 
 label_encoder = LabelEncoder()
 X_text        = df_final["text"].values
@@ -589,9 +578,7 @@ embedder     = SentenceTransformer("all-MiniLM-L6-v2")
 X_embeddings = embedder.encode(X_text, batch_size=64, show_progress_bar=True)
 
 
-# ═════════════════════════════════════════════════════════════
 #  TRAIN / TEST SPLIT
-# ═════════════════════════════════════════════════════════════
 
 X_train, X_test, y_train, y_test = train_test_split(
     X_embeddings, y_encoded,
@@ -601,11 +588,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 
-# ═════════════════════════════════════════════════════════════
 #  TRAIN CLASSIFIER
-#  NOTE: multi_class="auto" was removed in sklearn 1.5 — do not use it.
-#  LogisticRegression handles multiclass natively with lbfgs.
-# ═════════════════════════════════════════════════════════════
 
 print("\nTraining LogisticRegression...")
 
@@ -618,9 +601,7 @@ clf = LogisticRegression(
 clf.fit(X_train, y_train)
 
 
-# ═════════════════════════════════════════════════════════════
 #  EVALUATE
-# ═════════════════════════════════════════════════════════════
 
 y_pred   = clf.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
@@ -679,11 +660,9 @@ else:
     print("✅ All sanity checks passed!")
 
 
-# ═════════════════════════════════════════════════════════════
 #  SAVE CONFIDENCE THRESHOLD ALONGSIDE MODEL
 #  At inference time, if max probability < CONF_THRESHOLD,
 #  return "General Medicine" as a safe fallback.
-# ═════════════════════════════════════════════════════════════
 
 CONF_THRESHOLD = 0.30   # tune if needed
 
@@ -703,9 +682,7 @@ else:
     )
 
 
-# ═════════════════════════════════════════════════════════════
 #  EXAMPLE: How to use the model at inference time
-# ═════════════════════════════════════════════════════════════
 
 print("\n── Inference example ──")
 print("Use this snippet in your patient bot:\n")
