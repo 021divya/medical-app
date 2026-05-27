@@ -19,7 +19,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
 
   String name = 'Guest User';
   bool isSaving = false;
-  bool isLoading = true; // ✅ Loading state
+  bool isLoading = true; // Loading state
 
   // PERSONAL
   String? email, phone, gender, dob, bloodGroup, maritalStatus,
@@ -46,7 +46,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
     super.dispose();
   }
 
-  // ✅ Load from backend first, fallback to SharedPreferences
+  //  Load from backend first, fallback to SharedPreferences
   Future<void> _loadProfile() async {
     setState(() => isLoading = true);
 
@@ -111,7 +111,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
     if (mounted) setState(() => isLoading = false);
   }
 
-  // ✅ Save to backend + SharedPreferences cache
+  //  Save to backend + SharedPreferences cache
   Future<void> _saveProfileToBackend() async {
     setState(() => isSaving = true);
 
@@ -141,7 +141,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
 
     bool success = await ApiService.updateProfile(data);
 
-    // ✅ Also cache locally so it survives page reload
+    //  Also cache locally so it survives page reload
     if (success) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('patient_name', name);
