@@ -1,12 +1,3 @@
-# =============================================================
-#  bot_flow.py  —  AI Patient Bot
-#  Key fixes:
-#    ✅ predict_specialist.py is now rule-first (no ML hallucinations)
-#    ✅ Ophthalmology + Gastroenterology added to follow-up rules
-#    ✅ Emergency keywords expanded
-#    ✅ Session handling unchanged
-# =============================================================
-
 from datetime import datetime
 import logging
 import re
@@ -21,9 +12,7 @@ logging.basicConfig(
 log = logging.getLogger("bot_flow")
 
 
-# ─────────────────────────────────────────────────────────────
 # Greeting helper
-# ─────────────────────────────────────────────────────────────
 
 def greet_user() -> str:
     hour = datetime.now().hour
@@ -34,9 +23,7 @@ def greet_user() -> str:
     return "Good evening"
 
 
-# ─────────────────────────────────────────────────────────────
 # Emergency keywords (checked BEFORE everything else)
-# ─────────────────────────────────────────────────────────────
 
 EMERGENCY_KEYWORDS = [
     "severe chest pain", "cannot breathe", "can't breathe",
@@ -46,9 +33,7 @@ EMERGENCY_KEYWORDS = [
 ]
 
 
-# ─────────────────────────────────────────────────────────────
 # Follow-up rules (ambiguous symptoms that need clarification)
-# ─────────────────────────────────────────────────────────────
 
 FOLLOW_UP_RULES = {
     "headache": {
@@ -68,10 +53,7 @@ FOLLOW_UP_RULES = {
     },
 }
 
-
-# ─────────────────────────────────────────────────────────────
 # Session store
-# ─────────────────────────────────────────────────────────────
 
 _sessions: dict[str, dict] = {}
 
@@ -105,16 +87,14 @@ def get_all_sessions() -> dict:
     }
 
 
-# ─────────────────────────────────────────────────────────────
 # Main message handler
-# ─────────────────────────────────────────────────────────────
 
 def handle_message(user_input: str, user_id: str) -> dict:
     text = user_input.strip()
     t    = text.lower()
     sess = _get_session(user_id)
 
-    # ── Emergency check (bypass everything — speed matters) ────────────
+    # ── Emergency check ────────────
     for kw in EMERGENCY_KEYWORDS:
         if kw in t:
             _clear_session(user_id)
@@ -125,9 +105,7 @@ def handle_message(user_input: str, user_id: str) -> dict:
 
     stage = sess["stage"]
 
-    # ══════════════════════════════════════════════════════════════════
     #  STAGE: SYMPTOMS
-    # ══════════════════════════════════════════════════════════════════
     if stage == "SYMPTOMS":
 
         # ── Spell check + gibberish detection ──────────────────────────
@@ -196,9 +174,8 @@ def handle_message(user_input: str, user_id: str) -> dict:
             response["correction_note"] = correction_note
         return response
 
-    # ══════════════════════════════════════════════════════════════════
+
     #  STAGE: FOLLOWUP
-    # ══════════════════════════════════════════════════════════════════
     if stage == "FOLLOWUP":
         rule       = sess.get("pending_rule", {})
         specialist = (
@@ -211,9 +188,8 @@ def handle_message(user_input: str, user_id: str) -> dict:
         sess["stage"]        = "CHOICE"
         return {"type": "Specialist Choice", "specialist": specialist}
 
-    # ══════════════════════════════════════════════════════════════════
+
     #  STAGE: CHOICE
-    # ══════════════════════════════════════════════════════════════════
     if stage == "CHOICE":
         chose_specialist = (
             "1" in t or "specialist" in t
@@ -228,9 +204,8 @@ def handle_message(user_input: str, user_id: str) -> dict:
             sess["filters"]     = {}
             return {"type": "Ask Filters", "filter_step": 0}
 
-    # ══════════════════════════════════════════════════════════════════
+ 
     #  STAGE: AFTER_SPEC
-    # ══════════════════════════════════════════════════════════════════
     if stage == "AFTER_SPEC":
         if "yes" in t or "1" in t:
             sess["stage"]       = "FILTERS"
@@ -244,9 +219,7 @@ def handle_message(user_input: str, user_id: str) -> dict:
                 "message": "🌿 We hope you feel better soon! Take care. 💙",
             }
 
-    # ══════════════════════════════════════════════════════════════════
     #  STAGE: FILTERS
-    # ══════════════════════════════════════════════════════════════════
     if stage == "FILTERS":
         step    = sess["filter_step"]
         filters = sess["filters"]
@@ -283,9 +256,7 @@ def handle_message(user_input: str, user_id: str) -> dict:
     return {"type": "Error", "message": "Something went wrong. Please try again."}
 
 
-# ─────────────────────────────────────────────────────────────
 # Helper
-# ─────────────────────────────────────────────────────────────
 
 def _parse_number(text: str):
     m = re.search(r"[\d]+(?:\.\d+)?", text)
