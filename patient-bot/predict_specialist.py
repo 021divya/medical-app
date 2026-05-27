@@ -2,18 +2,12 @@ import joblib
 import os
 import re
 
-# ─────────────────────────────────────────────────────────────
 # Model paths
-# ─────────────────────────────────────────────────────────────
 BASE_DIR           = os.path.dirname(os.path.abspath(__file__))
 CLASSIFIER_PATH    = os.path.join(BASE_DIR, "model", "specialist_classifier.pkl")
 LABEL_ENCODER_PATH = os.path.join(BASE_DIR, "model", "label_encoder.pkl")
 
-# ─────────────────────────────────────────────────────────────
-# Lazy globals — loaded only on first prediction call
-# This is the KEY fix — models do NOT load at import time
-# so uvicorn can bind the port immediately on startup
-# ─────────────────────────────────────────────────────────────
+
 _clf           = None
 _label_encoder = None
 _embedder      = None
@@ -21,7 +15,7 @@ _embedder      = None
 def _load_models():
     global _clf, _label_encoder, _embedder
     if _embedder is not None:
-        return  # already loaded, skip
+        return  
     try:
         from sentence_transformers import SentenceTransformer
         _clf           = joblib.load(CLASSIFIER_PATH)
@@ -33,9 +27,7 @@ def _load_models():
         _clf = _label_encoder = _embedder = None
 
 
-# ─────────────────────────────────────────────────────────────
 # RULE-BASED MAP  (highest priority — always checked first)
-# ─────────────────────────────────────────────────────────────
 RULE_MAP = [
     # ENT
     (["ear", "hearing", "ear pain", "ear ache", "earache",
@@ -121,9 +113,7 @@ def _rule_based(text: str) -> str | None:
     return None
 
 
-# ─────────────────────────────────────────────────────────────
 # ML confidence threshold
-# ─────────────────────────────────────────────────────────────
 ML_CONFIDENCE_THRESHOLD = 0.55
 
 
@@ -143,7 +133,7 @@ def predict_specialist(symptoms_text: str) -> str:
         print(f"[predict] Rule-based → {rule_result}")
         return rule_result
 
-    # ── Layer 2: ML model (loaded lazily here, not at startup) ─
+    # ── Layer 2: ML model (loaded lazily here) ─
     _load_models()
 
     if _clf is not None and _embedder is not None:
