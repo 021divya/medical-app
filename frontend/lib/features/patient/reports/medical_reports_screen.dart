@@ -127,7 +127,6 @@ class _MedicalReportsScreenState extends State<MedicalReportsScreen> {
     }
   }
 
-  // ✅ FIXED: Open file using mainBaseUrl (10.0.2.2 on Android) + externalApplication
   Future<void> _openFile(String fileUrl) async {
     final fullUrl = '${ApiService.mainBaseUrl}/$fileUrl';
     final uri = Uri.parse(fullUrl);
@@ -378,7 +377,7 @@ class _MedicalReportsScreenState extends State<MedicalReportsScreen> {
               ],
             ),
           ),
-          // ✅ FIXED: Use _openFile() which builds correct URL for emulator
+
           if (record['file_url'] != null)
             IconButton(
               icon: Icon(Icons.open_in_new, color: primaryLavender, size: 20),
