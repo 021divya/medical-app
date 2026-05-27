@@ -460,7 +460,7 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
             hint: 'Full Name',
             icon: Icons.person,
             keyboardType: TextInputType.name,
-            // ✅ Only letters and spaces allowed
+            //  Only letters and spaces allowed
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
             ],
@@ -480,7 +480,7 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
                 hint: 'Age',
                 icon: Icons.cake,
                 keyboardType: TextInputType.number,
-                // ✅ Only digits, max 3 chars
+                //  Only digits, max 3 chars
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                   LengthLimitingTextInputFormatter(3),
@@ -503,7 +503,7 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
                 hint: 'Phone (10 digits)',
                 icon: Icons.phone,
                 keyboardType: TextInputType.phone,
-                // ✅ Only digits, exactly 10
+                //  Only digits, exactly 10
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                   LengthLimitingTextInputFormatter(10),
@@ -548,7 +548,7 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
       maxLines: maxLines,
       inputFormatters: inputFormatters,
       validator: validator,
-      autovalidateMode: AutovalidateMode.onUserInteraction, // ✅ Live validation
+      autovalidateMode: AutovalidateMode.onUserInteraction, //  Live validation
       decoration: InputDecoration(
         hintText: hint,
         prefixIcon: Icon(icon, size: 18, color: Colors.grey),
