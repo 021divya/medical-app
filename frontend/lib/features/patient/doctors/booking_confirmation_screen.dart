@@ -73,11 +73,9 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen>
 
     HapticFeedback.heavyImpact();
 
-    // ✅ Save booking to backend after payment
     _saveBookingToBackend();
   }
 
-  // ✅ Save to backend so My Appointments gets updated
   Future<void> _saveBookingToBackend() async {
     final regNo =
         'MCI-${widget.doctor.name.hashCode.abs() % 90000 + 10000}';
@@ -129,7 +127,7 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen>
     }
   }
 
-  // ✅ Show printable ticket in a dialog (works on web + mobile)
+
   void _showPrintableTicket() {
     final months = [
       '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -341,7 +339,6 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen>
           child: Column(
             children: [
               _successHeader(),
-              // ✅ Show saving status
               if (_savingBooking)
                 const Padding(
                   padding: EdgeInsets.all(12),
@@ -504,7 +501,7 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen>
             Row(children: [
               const Icon(Icons.event_available, color: primary, size: 20),
               const SizedBox(width: 8),
-              const Text('Appointment Summary',   // ✅ RENAMED
+              const Text('Appointment Summary',   
                   style: TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 15)),
             ]),
@@ -759,7 +756,7 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen>
               width: double.infinity,
               height: 50,
               child: OutlinedButton.icon(
-                onPressed: _showPrintableTicket, // ✅ REAL TICKET DIALOG
+                onPressed: _showPrintableTicket,
                 icon: const Icon(Icons.receipt_long, color: primary),
                 label: const Text('View & Copy Ticket',
                     style: TextStyle(
